@@ -144,6 +144,70 @@ h4 {
      background-color: #061E33;
 }
 
+/* The snackbar - position it at the bottom and in the middle of the screen */
+#snackbar {
+     visibility: hidden;
+     min-width: 250px;
+     max-width: 96%;
+     background-color: #333;
+     color: #fff;
+     text-align: left;
+     border-radius: 2px;
+     padding: 16px;
+     position: fixed;
+     z-index: 1;
+     left: 2%;
+     bottom: 30px;
+     font-size: 17px;  
+}
+   
+   /* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show {
+     visibility: visible; /* Show the snackbar */
+     /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+     However, delay the fade out process for 2.5 seconds */
+     -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+     animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+   
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+     from {bottom: 0; opacity: 0;}
+     to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+     from {bottom: 0; opacity: 0;}
+     to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+     from {bottom: 30px; opacity: 1;}
+     to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+     from {bottom: 30px; opacity: 1;}
+     to {bottom: 0; opacity: 0;}
+}  
+
+/* The close button */
+.closebtn {
+     margin-left: 15px;
+     color: white;
+     font-weight: bold;
+     float: right;
+     font-size: 22px;
+     line-height: 20px;
+     cursor: pointer;
+     transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+     color: black;
+}
+
 /* FOR NON-MOBILE DEVICES */
 
 @media only screen and (min-width: 600px) {
