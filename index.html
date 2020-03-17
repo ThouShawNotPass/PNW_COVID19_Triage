@@ -19,7 +19,7 @@
 	<!-- BACK TO TOP -->
 	<button onclick="topFunction()" id="back-to-top" title="Go to top">Back to Top</button>
 	
-	<!-- MODAL SECTION -->
+	<!-- MODAL FIND TEST CENTER -->
 	<div class="modal fade" id="myModal">
 		<div class="modal-dialog modal-lg modal-dialog-centered">
 			<div class="modal-content">
@@ -46,7 +46,37 @@
 			
 			</div>
 		</div>
-	   </div>
+	</div>
+	
+	<!-- MODAL DISCLAIMER -->
+	<div class="modal fade show" id="myModalDisclaimer" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+			
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<h4 id="modal-title" class="modal-title">Disclaimer</h4>
+			</div>
+			
+			<!-- Modal body -->
+			<div class="modal-body text-center">
+				<h3 id="modal-text" class="text-justify">
+					The information contained herein should NOT be used as a substitute for the advice of 
+					an appropriately qualified and licensed physician or other health care provider. If you think you 
+					have been exposed to COVID-19 and develop a fever and symptoms, such as cough or difficulty breathing, 
+					call your healthcare provider for medical advice.
+				</h3>
+				<!-- <img class="img-fluid align-self-center" src="img/patient-flow.png" alt="Patient Flow"> -->
+			</div>
+			
+			<!-- Modal footer -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" data-dismiss="modal">Okay</button>
+			</div>
+			
+			</div>
+		</div>
+	</div>
 
 	<!-- NAV SECTION -->
 	<div class="hero-bg"></div>
@@ -266,7 +296,7 @@
 	</section>
 
 	<!-- FOOTER -->
-	<div id="snackbar" class="show">
+	<div id="snackbar"> 
 		<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
 		DISCLAIMER: The information contained herein should NOT be used as a substitute for the advice of 
 		an appropriately qualified and licensed physician or other health care provider. If you think you 
@@ -290,6 +320,9 @@
 
 		// When the user scrolls down 20px from the top of the document, show the button
 		window.onscroll = function() {scrollFunction()};
+		$(document).ready(function(){
+			$("#myModalDisclaimer").modal('show');
+		});
 
 		function scrollFunction() {
 			if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
