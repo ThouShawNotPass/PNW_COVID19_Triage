@@ -114,12 +114,12 @@ h4 {
 
 .my-footer {
      background-color: #061E33;
+     color: white;
      padding: 10px 0px;
      text-align: center;
 }
 
 .my-footer a {
-     color: white;
      cursor: pointer;
 }
 
