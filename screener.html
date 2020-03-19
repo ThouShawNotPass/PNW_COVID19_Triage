@@ -298,16 +298,6 @@
 
           function getLocation() {
 			if (navigator.geolocation) {
-                    Swal.fire({
-                         allowOutsideClick: false,
-                         confirmButtonText: 'Back to Home',
-                         icon: 'success',
-                         title: 'Test Center Found',
-                         text: 'We will find you directions from your current location to the nearest testing center.',
-                         onClose: () => {
-                              window.location.href = "index.html";
-                         },
-                    })
 				navigator.geolocation.getCurrentPosition(showPosition, showError);
 			} else {
                     Swal.fire({
@@ -377,6 +367,16 @@
 			var testCenter = minLat + "," + minLon;
 			var googleMapsUrl = "https://www.google.com/maps/dir/" + currentPos + "/" + testCenter + "/@" + currentPos + ",14z"
                window.open(googleMapsUrl, '_blank');
+               Swal.fire({
+                    allowOutsideClick: false,
+                    confirmButtonText: 'Back to Home',
+                    icon: 'success',
+                    title: 'Test Center Found',
+                    text: 'We will find you directions from your current location to the nearest testing center.',
+                    onClose: () => {
+                         window.location.href = "index.html";
+                    },
+               })
           }
           
           // calculates dist between two pts in miles
