@@ -1,0 +1,392 @@
+<!-- ADD LOCATION: https://forms.gle/6wn1bmg8XZ8Bdrad8 -->
+<!-- SHARABLE LINK: https://docs.google.com/spreadsheets/d/1zKvuJcQ4JGTSNwAnO7cDjTl0ACP99gEBLTeap9TRTkY/edit?usp=sharing-->
+<!-- PUBLISHED LINK: https://docs.google.com/spreadsheets/d/e/2PACX-1vQAZK1_rqugl4k37fl40S_oZ9cGhwjdVJn3rJitHBDMmZ1kIZE1GcKiJ_aaKcnuF-OLQY8ZD_vfU8h7/pubhtml?gid=0&single=true -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Screening Test</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700,900&display=swap" rel="stylesheet">
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.min.js'></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="quiz.css">
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-161007682-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-161007682-1');
+	</script>
+
+</head>
+<body>
+	<script>
+          var publicSpreadsheetUrl = 'https://docs.google.com/spreadsheets/d/1zKvuJcQ4JGTSNwAnO7cDjTl0ACP99gEBLTeap9TRTkY/edit?usp=sharing';
+		var lat = 0;
+          var lon = 0;
+          
+		// Calls the start() function when the page is finished loading.
+          $(document).ready(function(){start();});
+
+          // Shows the disclaimer and then asks the screener qustions.
+          function start() {
+               Disclaimer.fire().then((result) => {
+                    askQuestions();
+                    // TODO: Handle errors if user does not agree
+               });
+          }
+
+          // SweetAlert2 Object that presents the medical disclaimer
+          const Disclaimer = Swal.mixin({
+               allowOutsideClick: false,
+               confirmButtonText: 'I agree',
+               focusConfirm: false,
+               icon: 'info',
+               padding: '2em',
+               reverseButtons: true,
+               title: '<h1>COVID-19 Risk Screening</h1>',
+               html: '<p>The information contained herein should NOT be used as a substitute ' +
+                    'for the advice of an appropriately qualified and licensed health care ' + 
+                    'provider. If you think you have been exposed to COVID-19 and develop ' + 
+                    'symptoms such as a fever, cough or difficulty breathing, call your ' +
+                    'healthcare provider for medical advice.</p>',
+               showClass: {
+                    popup: 'animated fadeIn'
+               },
+               hideClass: {
+                    popup: 'animated fadeOut'
+               }
+          });
+
+          //  SweetAlert2 popup that tells the user they do not qualify for testing.
+          const DontQualify = Swal.mixin({
+               allowOutsideClick: false,
+               confirmButtonText: 'Okay',
+               focusConfirm: false,
+               icon: 'warning',
+               padding: '2em',
+               reverseButtons: true,
+               title: '<h1>Thank you for using the COVID-19 screening tool</h1>',
+               html: '<p>Based on state and federal health guidelines and due to current testing ' +
+               'capacity, you are not eligible for testing through this program at this time. Please ' +
+               'note that this is not a reccomendation of whether you should be tested. For additional ' +
+               'information, please see the <a href="https://www.cdc.gov/coronavirus/2019-ncov/if-you-are-sick/steps-when-sick.html?CDC_AA_refVal=https%3A%2F%2Fwww.cdc.gov%2Fcoronavirus%2F2019-ncov%2Fabout%2Fsteps-when-sick.html">CDC guidelines</a>.</p>',
+               showClass: {
+                    popup: 'animated fadeIn'
+               },
+               hideClass: {
+                    popup: 'animated fadeOut'
+               }, 
+               onClose: () => {
+                    window.location.href = "index.html";
+               },
+          });
+
+          // SweetAlert2 popup that tells users they qualify for testing.
+          const YesQualify = Swal.mixin({
+               allowOutsideClick: false,
+               confirmButtonText: 'Find testing center',
+               focusConfirm: false,
+               icon: 'success',
+               padding: '2em',
+               reverseButtons: true,
+               showLoaderOnConfirm: true,
+               title: '<h1>Thank you for using the COVID-19 screening tool</h1>',
+               html: '<p>Based on state and federal health guidelines we have determined that you ' +
+               'qualify for testing. We reccomend you call your doctor immediately and schedule ' + 
+               'an appointment at a local testing center for your to provide a biospecimen using a ' +
+               'nasopharyngeal (NP) swab. For additional information, please see the ' +
+               '<a href="https://www.cdc.gov/coronavirus/2019-ncov/if-you-are-sick/steps-when-sick.html?CDC_AA_refVal=https%3A%2F%2Fwww.cdc.gov%2Fcoronavirus%2F2019-ncov%2Fabout%2Fsteps-when-sick.html">CDC guidelines</a>.</p>',
+               showClass: {
+                    popup: 'animated fadeIn'
+               },
+               hideClass: {
+                    popup: 'animated fadeOut'
+               }, 
+               preConfirm: () => {
+                    getLocation();
+               },
+          });
+
+          // SweetAlert2 queue that goes through all the screener questions.
+          function askQuestions() {
+               const Question = Swal.mixin({
+                    allowOutsideClick: false,
+                    confirmButtonText: 'Next',
+                    progressSteps: ['1', '2', '3', '4', '5', '6', '7'],
+                    padding: '2.5em',
+                    showClass: {
+                         popup: 'animated fadeIn'
+                    },
+                    hideClass: {
+                         popup: 'animated fadeOut'
+                    }
+               }).queue([
+                    { // QUESTION 1: CONTACT WITH INFECTED
+                         title: '<h2>In the past 14 days, have you had contact (of more than 15 minutes, at less than 6 feet distance) with someone who has a confirmed case of Coronavirus (COVID-19)?</h2>',
+                         html: '<label class="container">Yes<input id="hasContact" type="radio" name="radio"><span class="ticmark"></span></label>' +
+                         '<label class="container item">No<input id="noContact" type="radio" name="radio"><span class="ticmark"></span></label>',
+                         preConfirm: () => {
+                              if (document.getElementById("hasContact").checked) {
+                                   return "hasContact";
+                              } else if (document.getElementById("noContact").checked) {
+                                   return "noContact";
+                              } else {
+                                   document.getElementById("swal2-content").addEventListener("click", function() {Swal.resetValidationMessage()});
+                                   Swal.showValidationMessage('Please select one of the above');
+                              }
+                         },
+                    },
+                    { // QUESTION 2: TRAVEL
+                         title: '<h2>Within the past 14 days, have you traveled to any of the following areas? (Select all that apply)</h2>',
+                         html: '<label class="container">China<input id="fromChina" type="checkbox"><span class="checkmark"></span></label>' +
+                         '<label class="container">Iran<input id="fromIran" type="checkbox"><span class="checkmark"></span></label>' +
+                         '<label class="container">South Korea<input id="fromSouthKorea" type="checkbox"><span class="checkmark"></span></label>' +
+                         '<label class="container">Europe<input id="fromEurpoe" type="checkbox"><span class="checkmark"></span></label>' +
+                         '<label class="container">None of these<input id="noTravel" type="checkbox"><span class="checkmark"></span></label>',
+                         preConfirm: () => {
+                              var travel = [];
+                              if (document.getElementById("fromChina").checked) {
+                                   travel.push("China");
+                              }
+                              if (document.getElementById("fromIran").checked) {
+                                   travel.push("Iran");
+                              }
+                              if (document.getElementById("fromSouthKorea").checked) {
+                                   travel.push("South Korea");
+                              }
+                              if (document.getElementById("fromEurpoe").checked) {
+                                   travel.push("Europe");
+                              }
+                              if (document.getElementById("noTravel").checked) {
+                                   travel.push("NoTravel");
+                              }
+                              // check that the user has selected at least one option
+                              if (travel.length == 0) {
+                                   document.getElementById("swal2-content").addEventListener("click", function() {Swal.resetValidationMessage()});
+                                   Swal.showValidationMessage('Please select at least one option');
+                              }
+                              // remove no travel from the array of travel locations
+                              if (document.getElementById("noTravel").checked) {
+                                   travel.pop("NoTravel");
+                              }
+                              return travel;
+                         },
+                    },
+                    {// QUESTION 3: AGE
+                         title: '<h2>Are you 60 years old or older?</h2>',
+                         html: '<label class="container">Yes<input id="isElderly" type="radio" name="radio"><span class="ticmark"></span></label>' +
+                         '<label class="container">No<input id="notElderly" type="radio" name="radio"><span class="ticmark"></span></label>',
+                         preConfirm: () => {
+                              if (document.getElementById("isElderly").checked) {
+                                   return "isElderly";
+                              } else if (document.getElementById("notElderly").checked) {
+                                   return "notElderly";
+                              } else {
+                                   document.getElementById("swal2-content").addEventListener("click", function() {Swal.resetValidationMessage()});
+                                   Swal.showValidationMessage('Please select one of the above');
+                              }
+                         },
+                    },
+                    {//QUESTION 4: HEALTHCARE WORKERS
+                         title: '<h2>Even if you are not a doctor or nurse, do you work in any of ' + 
+                         'the following settings: clinic, hospital, nursing home, or senior care facility?</h2>',
+                         html: '<label class="container">Yes<input id="isHealthcareWorker" type="radio" name="radio"><span class="ticmark"></span></label>' +
+                         '<label class="container">No<input id="notHealthcareWorker" type="radio" name="radio"><span class="ticmark"></span></label>',
+                         preConfirm: () => {
+                              if (document.getElementById("isHealthcareWorker").checked) {
+                                   return "isHealthcareWorker";
+                              } else if (document.getElementById("notHealthcareWorker").checked) {
+                                   return "notHealthcareWorker";
+                              } else {
+                                   document.getElementById("swal2-content").addEventListener("click", function() {Swal.resetValidationMessage()});
+                                   Swal.showValidationMessage('Please select one of the above');
+                              }
+                         },
+                    },
+                    {//QUESTION 5: SYMPTOMS
+                         title: '<h2>Do you currently have any of the following symptoms? (Select all that apply)</h2>',
+                         html: '<label class="container">Fever (less than 100.4˚F)<input id="slightFever" type="checkbox"><span class="checkmark"></span></label>' +
+                         '<label class="container">Fever (greater than 100.4˚F)<input id="heavyFever" type="checkbox"><span class="checkmark"></span></label>' +
+                         '<label class="container">Coughing<input id="coughing" type="checkbox"><span class="checkmark"></span></label>' +
+                         '<label class="container">Shortness of breath<input id="shortnessOfBreath" type="checkbox"><span class="checkmark"></span></label>' +
+                         '<label class="container">None of the above<input id="noSymptoms" type="checkbox"><span class="checkmark"></span></label>',
+                         preConfirm: () => {
+                              var symptoms = [];
+                              if (document.getElementById("slightFever").checked) {
+                                   symptoms.push("slightFever");
+                              }
+                              if (document.getElementById("heavyFever").checked) {
+                                   symptoms.push("heavyFever");
+                              }
+                              if (document.getElementById("coughing").checked) {
+                                   symptoms.push("coughing");
+                              }
+                              if (document.getElementById("shortnessOfBreath").checked) {
+                                   symptoms.push("shortnessOfBreath");
+                              }
+                              if (document.getElementById("noSymptoms").checked) {
+                                   symptoms.push("noSymptoms");
+                              }
+                              // Check if the user has not submitted anything
+                              if (symptoms.length == 0) {
+                                   document.getElementById("swal2-content").addEventListener("click", function() {Swal.resetValidationMessage()});
+                                   Swal.showValidationMessage('Please select at least one option');
+                              }
+                              // Remove noSymptoms from the array before returning
+                              if (document.getElementById("noSymptoms").checked) {
+                                   symptoms.pop("noSymptoms");
+                              }
+                              return symptoms;
+                         },
+                    },
+                    {//QUESTION 6: UNDERLYING CONDITIONS
+                         title: '<h2>In general, do you currently have any health conditions that you manage (such as ' + 
+                              'diabetes, asthma, or high blood pressure)?</h2>',
+                              html: '<label class="container">Yes<input id="hasUnderlyingCondition" type="radio" name="radio"><span class="ticmark"></span></label>' +
+                         '<label class="container">No<input id="noUnderlyingCondition" type="radio" name="radio"><span class="ticmark"></span></label>',
+                         preConfirm: () => {
+                              if (document.getElementById("hasUnderlyingCondition").checked) {
+                                   return "hasUnderlyingCondition";
+                              } else if (document.getElementById("noUnderlyingCondition").checked) {
+                                   return "noUnderlyingCondition";
+                              } else {
+                                   document.getElementById("swal2-content").addEventListener("click", function() {Swal.resetValidationMessage()});
+                                   Swal.showValidationMessage('Please select one of the above');
+                              }
+                         },
+                    },
+                    {//QUESTION 7: PREGNANCY
+                         title: '<h2>Are you currently pregnant?</h2>',
+                         html: '<label class="container">Yes<input id="isPregnant" type="radio" name="radio"><span class="ticmark"></span></label>' +
+                         '<label class="container">No<input id="notPregnant" type="radio" name="radio"><span class="ticmark"></span></label>',
+                         preConfirm: () => {
+                              if (document.getElementById("isPregnant").checked) {
+                                   return "isPregnant";
+                              } else if (document.getElementById("notPregnant").checked) {
+                                   return "notPregnant";
+                              } else {
+                                   document.getElementById("swal2-content").addEventListener("click", function() {Swal.resetValidationMessage()});
+                                   Swal.showValidationMessage('Please select one of the above');
+                              }
+                         },
+                    },
+               ]).then((result) => {
+                    if (result.value) {
+                         const isAtRisk = result.value[2] == "isElderly" || result.value[5] == "hasUnderlyingCondition" || result.value[6] == "isPregnant";
+                         const isHealthcareWorker = result.value[3] == "isHealthcareWorker";
+                         const numSymptoms = result.value[4].length; // number of symptoms user has (array can be broken)
+                         //const hasContact = result.value[0] == "hasContact";
+                         //const numTravel = result.value[1].length; // number of "risky" countries user has been to w/in 14 days
+
+                         if (numSymptoms > 0 && (isAtRisk || isHealthcareWorker)) {
+                              YesQualify.fire();
+                         } else {
+                              DontQualify.fire();
+                         }
+                    }
+               });
+          }
+
+          function getLocation() {
+			if (navigator.geolocation) {
+                    Swal.fire({
+                         allowOutsideClick: false,
+                         confirmButtonText: 'Back to Home',
+                         icon: 'success',
+                         title: 'Test Center Found',
+                         text: 'We will find you directions from your current location to the nearest testing center.',
+                         onClose: () => {
+                              window.location.href = "index.html";
+                         },
+                    })
+				navigator.geolocation.getCurrentPosition(showPosition, showError);
+			} else {
+                    Swal.fire({
+                         icon: 'error',
+                         title: 'Oops...',
+                         text: 'Geolocation is not supported by this browser.',
+                    })
+			}
+		}
+
+		function showPosition(position) {
+			lat = position.coords.latitude;
+			lon = position.coords.longitude;
+			Tabletop.init({ 
+				key: publicSpreadsheetUrl, 
+				callback: showInfo, 
+                    simpleSheet: true
+               })
+		}
+
+		function showError(error) {
+			switch(error.code) {
+				case error.PERMISSION_DENIED:
+                         Swal.fire({
+                              icon: 'error',
+                              title: 'Permission Denied',
+                              text: 'We need your location to find you the closest testing center. Please reload the page and try again.',
+                         })
+					break;
+				case error.POSITION_UNAVAILABLE:
+                         Swal.fire({
+                              icon: 'error',
+                              title: 'Position Unavailable',
+                              text: 'Hmmm... Location information is unavailable. Please try again later.',
+                         })     
+					break;
+				case error.TIMEOUT:
+                         Swal.fire({
+                              icon: 'error',
+                              title: 'Timeout Error',
+                              text: 'Well. The request to get your location timed out. Please try again later.',
+                         })
+					break;
+				case error.UNKNOWN_ERROR:
+                         Swal.fire({
+                              icon: 'error',
+                              title: 'Unknown Error',
+                              text: 'Oof. An unknown error occurred. Please try again later.',
+                         })
+					break;
+			}
+          }
+          
+          function showInfo(data) {
+			var minLat = data[0].latitude;
+			var minLon = data[0].longitude;
+			var min = distance(lat, lon, data[0].latitude, data[0].longitude);
+			for (var i = 1; i < data.length; i++) {
+				var newDist = distance(lat, lon, data[i].latitude, data[i].longitude);
+				if (newDist < min) {
+					min = newDist;
+					minLat = data[i].latitude;
+					minLon = data[i].longitude;
+				}
+			}
+			var currentPos = lat + "," + lon;
+			var testCenter = minLat + "," + minLon;
+			var googleMapsUrl = "https://www.google.com/maps/dir/" + currentPos + "/" + testCenter + "/@" + currentPos + ",14z"
+               window.open(googleMapsUrl, '_blank');
+          }
+          
+          // calculates dist between two pts in miles
+		function distance(lat1, lon1, lat2, lon2) {
+			var p = 0.017453292519943295; // Math.PI / 180
+			var c = Math.cos;
+			var a = 0.5 - c((lat2 - lat1) * p)/2 + c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))/2;
+			var result = 0.621371 * 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km => miles
+			return Math.round(result * 10) / 10;
+		}
+	</script>
+</body>
+</html>

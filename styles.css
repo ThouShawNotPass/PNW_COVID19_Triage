@@ -46,6 +46,13 @@ h4 {
      line-height: 30px;
 }
 
+h5 {
+     font-size: 22px;
+     font-weight: 300;
+     line-height: 30px;
+     padding-top: 5vh;
+}
+
 .hero-bg {
      background-color: #F2F9FF;
      height: 100vh;
@@ -82,9 +89,9 @@ h4 {
      border-radius: 30px;
      color: #0F4C81;
      font-family: 'Roboto', sans-serif;
-     font-size: 16px;
+     font-size: 18px;
      font-weight: 400;
-     margin: none;
+     margin: 10px auto;
      outline: none !important;
      padding: 10px 15px;
 }
@@ -226,6 +233,10 @@ h4 {
           font-size: 26px;
           line-height: 40px;
      }
+     h5 {
+          font-size: 26px;
+          line-height: 40px;
+     }
      .hero-bg {
           height: 72vh;
      }
@@ -244,7 +255,7 @@ h4 {
           border: 4px solid #0F4C81;
           border-radius: 35px;
           font-size: 22px;
-          margin: 10px auto;
+          margin: 10px 0;
           padding: 15px 30px;
      }
 }

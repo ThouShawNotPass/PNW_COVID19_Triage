@@ -1,0 +1,149 @@
+/* Colors
+BLACK: #061E33
+ROYAL: #0F4C81
+LIGHT: #F2F9FF
+*/
+
+body {
+     background-color: #0F4C81;
+}
+
+.full-screen {
+     display: flex;
+     height: 100vh;
+     width: 100vw;
+}
+
+.popup {
+     background: #fff;
+     border: none;
+     border-radius: .3125em;
+     box-sizing: border-box;
+     flex-direction: column;
+     font-family: inherit;
+     font-size: 1rem;
+     justify-content: center;
+     margin: auto;
+     max-width: 100%;
+     padding: 1.25em;
+     position: relative;
+     width: 32em;
+}
+
+h1 {
+     font-family: 'Roboto', sans-serif;
+     font-size: 36px;
+     font-weight: 600;
+}
+
+h2 {
+     font-family: 'Roboto', sans-serif;
+     font-size: 20px;
+     font-weight: 500;
+     text-align: left;
+}
+
+p {
+     font-family: 'Roboto', sans-serif;
+     font-size: 18px;
+     font-weight: 300;
+     line-height: 24px;
+     text-align: justify;
+}
+
+a {
+     outline: none !important;
+}
+
+
+/* * * * * * * * * * * * * * * * * * * RADIO BUTTON * * * * * * * * * * * * * * * * * * */
+
+
+/* The container */
+.container {
+     display: block;
+     position: relative;
+     padding-left: 35px;
+     margin-bottom: 12px;
+     cursor: pointer;
+     font-size: 20px;
+     text-align: left;
+     -webkit-user-select: none;
+     -moz-user-select: none;
+     -ms-user-select: none;
+     user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container input {
+     position: absolute;
+     opacity: 0;
+     cursor: pointer;
+}
+
+/* Create a custom radio button */
+.ticmark {
+     position: absolute;
+     top: 0;
+     left: 0;
+     height: 25px;
+     width: 25px;
+     background-color: #eee;
+     border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark, .container:hover input ~ .ticmark {
+     background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark, .container input:checked ~ .ticmark {
+     background-color: #2196F3;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after, .ticmark:after {
+     content: "";
+     position: absolute;
+     display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after, .container input:checked ~ .ticmark:after {
+     display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container .ticmark:after {
+     top: 9px;
+     left: 9px;
+     width: 8px;
+     height: 8px;
+     border-radius: 50%;
+     background: white;
+}
+
+/* * * * * * * * * * * CHECKBOXES * * * * * * * * * * */
+/* Create a custom checkbox */
+.checkmark {
+     position: absolute;
+     top: 0;
+     left: 0;
+     height: 25px;
+     width: 25px;
+     background-color: #eee;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+     left: 10px;
+     top: 6px;
+     width: 5px;
+     height: 10px;
+     border: solid white;
+     border-width: 0 3px 3px 0;
+     -webkit-transform: rotate(45deg);
+     -ms-transform: rotate(45deg);
+     transform: rotate(45deg);
+}
