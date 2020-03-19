@@ -215,9 +215,23 @@ h5 {
      color: black;
 }
 
+/* SWEETALERT2 */
+.swal2-progress-step-line {
+     height: 6px !important;
+     width: 18px !important;
+}
+
+/* FOR iPHONE 5SE DEVICES */
+@media only screen and (max-width: 356px) {
+     .swal2-progress-step-line {
+          height: 4px !important;
+          width: 12px !important;
+     }
+}
+
 /* FOR NON-MOBILE DEVICES */
 
-@media only screen and (min-width: 600px) {
+@media only screen and (min-width: 536px) {
      h1 {
           font-size: 54px;
      }
@@ -257,5 +271,9 @@ h5 {
           font-size: 22px;
           margin: 10px 0;
           padding: 15px 30px;
+     }
+     .swal2-progress-step-line {
+          height: 8px !important;
+          width: 40px !important;
      }
 }
