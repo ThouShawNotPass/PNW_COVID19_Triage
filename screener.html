@@ -30,7 +30,7 @@
 <body>
 	<script>
           var publicSpreadsheetUrl = 'https://docs.google.com/spreadsheets/d/1zKvuJcQ4JGTSNwAnO7cDjTl0ACP99gEBLTeap9TRTkY/edit?usp=sharing';
-		var lat = 0;
+          var lat = 0;
           var lon = 0;
           
 		// Calls the start() function when the page is finished loading.
@@ -71,6 +71,7 @@
                allowOutsideClick: false,
                confirmButtonText: 'Okay',
                focusConfirm: false,
+               footer: '<a href="https://www.cdc.gov/coronavirus/2019-ncov/symptoms-testing/testing.html">Why do I not qualify?</a>',
                icon: 'warning',
                padding: '2em',
                reverseButtons: true,
@@ -111,8 +112,9 @@
                hideClass: {
                     popup: 'animated fadeOut'
                }, 
-               preConfirm: () => {
+               onClose: () => {
                     getLocation();
+                    return false; // prevents popup from closing
                },
           });
 
@@ -367,15 +369,22 @@
 			var testCenter = minLat + "," + minLon;
 			var googleMapsUrl = "https://www.google.com/maps/dir/" + currentPos + "/" + testCenter + "/@" + currentPos + ",14z"
                window.open(googleMapsUrl, '_blank');
+               isFinishedLoading = true;
                Swal.fire({
                     allowOutsideClick: false,
-                    confirmButtonText: 'Back to Home',
+                    cancelButtonText: 'Return home',
+                    confirmButtonText: 'Take me there',
                     icon: 'success',
+                    reverseButtons: true,
+                    showCancelButton: true,
                     title: 'Test Center Found',
-                    text: 'We will find you directions from your current location to the nearest testing center.',
-                    onClose: () => {
-                         window.location.href = "index.html";
-                    },
+                    text: 'We found you directions from your current location to the nearest testing center. This center is appointment-only. Please call your doctor to schedule an appointment.',
+               }).then((result) => {
+                    if (result.value) {
+                         window.open(googleMapsUrl, '_blank');
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                         window.open('index.html', '_blank');
+                    }
                })
           }
           
